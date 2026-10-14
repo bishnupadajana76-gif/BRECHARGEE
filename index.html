@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BBRecharge Admin Portal</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="login-screen" class="login-wrap">
+    <form id="login-form" class="login-card">
+      <div class="brand-mark">J</div>
+      <h1>BRecharge Admin</h1>
+      <p>Admin portal-এ লগইন করুন</p>
+      <label>Email</label><input id="email" type="email" autocomplete="username" required placeholder="admin@example.com">
+      <label>Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="আপনার পাসওয়ার্ড">
+      <button type="submit">Login</button>
+      <p id="login-error" class="error"></p>
+    </form>
+  </div>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark small">J</span><span>BRecharge</span></div>
+      <div class="nav-label">ADMIN MENU</div>
+      <button class="nav active" data-page="dashboard">▦ Dashboard</button>
+      <button class="nav" data-page="users">♙ Retailer / Distributor</button>
+      <button class="nav" data-page="recharges">↻ Recharge History</button>
+      <button class="nav" data-page="commissions">％ Commission Rules</button>
+      <div class="side-bottom"><span id="admin-name">Admin</span><button id="logout">Logout ↗</button></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div><span class="eyebrow">CONTROL CENTER</span><h2 id="page-title">Dashboard</h2></div><span class="status"><i></i> Admin session</span></header>
+      <div id="notice" class="notice hidden"></div>
+      <section id="dashboard-page" class="page">
+        <div class="welcome"><div><span class="eyebrow">OVERVIEW</span><h3>স্বাগতম, <span id="welcome-name">Admin</span> 👋</h3><p>আপনার BRecharge ব্যবসার সারাংশ এখানে দেখুন।</p></div><div class="welcome-icon">↗</div></div>
+        <div class="stats">
+          <article class="stat"><span>মোট Retailer / Distributor</span><strong id="stat-users">—</strong><small>Registered accounts</small></article>
+          <article class="stat"><span>Recharge Transactions</span><strong id="stat-recharges">—</strong><small>All recorded transactions</small></article>
+          <article class="stat"><span>Recharge Volume</span><strong id="stat-volume">₹0.00</strong><small>Recorded amount</small></article>
+          <article class="stat"><span>Pending Recharge</span><strong id="stat-pending">—</strong><small>Needs provider status check</small></article>
+          <article class="stat"><span>Total Wallet Balance</span><strong id="stat-wallet">₹0.00</strong><small>Across all accounts</small></article>
+          <article class="stat"><span>Active Commission Rules</span><strong id="stat-commissions">—</strong><small>Configured rules</small></article>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h3>শুরু করার checklist</h3><p>লাইভ করার আগে এই ধাপগুলো সম্পূর্ণ করুন।</p></div></div>
+          <div class="checklist"><div><b>01</b><span><strong>Admin password বদলান</strong><small>Production-এ শক্তিশালী password ব্যবহার করুন।</small></span></div><div><b>02</b><span><strong>Recharge API সংযুক্ত করুন</strong><small>Provider-এর official API documentation ও credentials লাগবে।</small></span></div><div><b>03</b><span><strong>Razorpay webhook যাচাই করুন</strong><small>Signature verification ছাড়া payment credit করবেন না।</small></span></div></div>
+        </div>
+      </section>
+      <section id="users-page" class="page hidden">
+        <div class="panel"><div class="panel-head"><div><h3>নতুন account তৈরি</h3><p>Retailer বা distributor যোগ করুন</p></div></div>
+          <form id="user-form" class="form-grid">
+            <div><label>পূর্ণ নাম</label><input name="name" required></div><div><label>Email</label><input name="email" type="email" required></div>
+            <div><label>Temporary password (কমপক্ষে 12 অক্ষর)</label><input name="password" type="password" minlength="12" required></div>
+            <div><label>Role</label><select name="role"><option value="retailer">Retailer</option><option value="distributor">Distributor</option></select></div>
+            <button type="submit">+ Create account</button>
+          </form>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h3>Account list</h3><p>সর্বশেষ ২০০টি account</p></div><button class="secondary" id="refresh-users">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Wallet</th></tr></thead><tbody id="users-table"></tbody></table></div></div>
+      </section>
+      <section id="recharges-page" class="page hidden">
+        <div class="panel"><div class="panel-head"><div><h3>Recharge history</h3><p>সর্বশেষ ২০০টি recharge transaction</p></div><button class="secondary" id="refresh-recharges">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Account</th><th>Mobile</th><th>Operator</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody id="recharges-table"></tbody></table></div></div>
+      </section>
+      <section id="commissions-page" class="page hidden">
+        <div class="panel"><div class="panel-head"><div><h3>Commission rule তৈরি</h3><p>এই starter-এ rule save হবে; recharge settlement-এ প্রয়োগ করতে integration দরকার।</p></div></div>
+          <form id="commission-form" class="form-grid">
+            <div><label>Rule name</label><input name="name" required placeholder="Retailer prepaid commission"></div>
+            <div><label>Operator</label><input name="operator" value="ALL" required placeholder="ALL / Airtel"></div>
+            <div><label>Service type</label><select name="service_type"><option value="mobile">Mobile</option><option value="dth">DTH</option><option value="billpay">Bill payment</option></select></div>
+            <div><label>Role</label><select name="role"><option value="retailer">Retailer</option><option value="distributor">Distributor</option></select></div>
+            <div><label>Commission (%)</label><input name="percent" type="number" min="0" max="100" step="0.0001" value="0" required></div>
+            <div><label>Flat commission (₹)</label><input name="flat_amount" type="number" min="0" step="0.01" value="0" required></div>
+            <button type="submit">+ Save rule</button>
+          </form>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h3>Saved rules</h3></div><button class="secondary" id="refresh-commissions">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Operator</th><th>Service</th><th>Role</th><th>Percent</th><th>Flat</th><th>Active</th></tr></thead><tbody id="commissions-table"></tbody></table></div></div>
+      </section>
+      <footer>BBRecharge Admin Portal · Starter version · Configure provider integrations before live use.</footer>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
