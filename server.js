@@ -12,7 +12,8 @@ const app = express();
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(express.json({ limit: "100kb" }));
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(__dirname));
+
 
 app.get("/api/health", async (_req, res) => {
   try {
