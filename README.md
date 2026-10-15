@@ -3,7 +3,7 @@
 বাংলা UI-সহ Node.js + PostgreSQL admin portal starter। এটি development starter, production-ready recharge/payment system নয়।
 
 ## Included
-- Admin login (bcrypt password hash, JWT session)
+- Admin login (123456789)
 - Dashboard summary
 - Retailer/distributor account creation and listing
 - Wallet balance table and audited admin credit/debit API endpoint
