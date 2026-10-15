@@ -1,4 +1,4 @@
-# BBRecharge Admin Portal — Starter
+# BRecharge Admin Portal — Starter
 
 বাংলা UI-সহ Node.js + PostgreSQL admin portal starter। এটি development starter, production-ready recharge/payment system নয়।
 
