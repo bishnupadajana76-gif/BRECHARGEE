@@ -48,6 +48,45 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
+app.post("/api/admin/reset-password", async (req, res) => {
+  try {
+    const token = req.get("x-reset-token");
+
+    if (!process.env.ADMIN_RESET_TOKEN ||
+        token !== process.env.ADMIN_RESET_TOKEN) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
+    const { email, password } = req.body || {};
+
+    if (typeof email !== "string" ||
+        typeof password !== "string" ||
+        password.length < 16) {
+      return res.status(400).json({
+        error: "Email and password of at least 16 characters required"
+      });
+    }
+
+    const hash = await bcrypt.hash(password, 12);
+
+    const result = await db.query(
+      `UPDATE users SET password_hash = $1
+       WHERE lower(email) = lower($2) AND role = 'admin'
+       RETURNING id`,
+      [hash, email.trim()]
+    );
+
+    if (!result.rowCount) {
+      return res.status(404).json({ error: "Admin account not found" });
+    }
+
+    res.json({ ok: true, message: "Password reset successful" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Password reset failed" });
+  }
+});
+
 app.get("/api/admin/summary", requireAuth, requireAdmin, async (_req, res) => {
   try {
     const [users, recharges, pending, wallets, commissions] = await Promise.all([
