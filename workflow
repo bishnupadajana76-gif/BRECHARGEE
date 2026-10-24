@@ -1,15 +1,15 @@
 
-name: Manual workflow
+name: Initialize BRecharge Admin
 
 on:
   workflow_dispatch:
 
 jobs:
-  test:
+  initialize:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Show success message
-        run: echo "BRecharge workflow is running"
+      - name: Check workflow
+        run: echo "Workflow trigger is working"
