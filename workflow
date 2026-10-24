@@ -1,8 +1,11 @@
 
 name: Initialize BRecharge Admin
 
-on:
+'on':
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   initialize:
